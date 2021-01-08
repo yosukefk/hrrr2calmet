@@ -497,6 +497,11 @@ def tester():
 
 if __name__ == '__main__':
     import sys
+
+    if len(sys.argv) < 6:
+        print('usage: python3 {} input_grib2 ouput_m3d i0 j0 i1 j1'.format(sys.argv[0]))
+        sys.exit(1)
+    
     fname, oname, i0, j0, i1, j1 = sys.argv[1:7]
     i0, j0, i1, j1 = [int(_) for _ in (i0, j0, i1, j1)]
 
