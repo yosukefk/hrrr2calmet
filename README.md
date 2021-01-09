@@ -20,9 +20,9 @@ Grab required packages
 
 ## Usage
 
-`python3 hrrr2calmet.py infile outfile i0 j0 i1 j0`
+`python3 hrrr2calmet.py outfile i0 j0 i1 j0 infile [...]`
 
-where `infile` is input HRRR dataset in grib2 format, `outfile` is output "3D.DAT" format text file for CALMET, `i0`, `j0`, `i1` and `j1` are 1-based indices of lower-left and upper-right grid cells (i for easting, j for northing).
+where `outfile` is output "3D.DAT" format text file for CALMET, `i0`, `j0`, `i1` and `j1` are 1-based indices of lower-left and upper-right grid cells (i for easting, j for northing).  `infile [...]` are series of input grib2 format files.
 
 ## Disclaimer
 
@@ -30,4 +30,3 @@ Please use the tool at your own risk.
 
 Currently, indices (i0, j0, i1, j1) I assume you can somehow look these up, knowing where the domain of your interest is.  
 
-Right now one file with one time step (hourly analysis file, for example) got translated into one 3D.DAT format file.  I may add capability to process series of grib2 files into one 3D.DAT file, but this can be done flexibility by CALMET, so I did not do it.
