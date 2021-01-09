@@ -10,14 +10,14 @@ import sys
 class HrrrSeries:
     def __init__(self, fnames, fo, i0, j0, i1, j1):
         self.fnames = fnames
-        self.fo = fo
+        self.fo = open(fo, 'w')
         self.i0 = i0
         self.j0 = j0
         self.i1 = i1
         self.j1 = j1
 
         # load the first data
-        hr = Hrrr(fnames[0], fo, i0, j0, i1, j1)
+        hr = Hrrr(fnames[0], self.fo, i0, j0, i1, j1)
         self.hr0 = hr
         self.ymdh0 = hr.ymdh
         self.ni = hr.ni
@@ -44,6 +44,7 @@ class HrrrSeries:
 
         for fname in self.fnames[1:]:
             hr = Hrrr(fname, self.fo, self.i0, self.j0, self.i1, self.j1)
+            hr.write_data()
 
 
 
@@ -499,13 +500,17 @@ if __name__ == '__main__':
     import sys
 
     if len(sys.argv) < 6:
-        print('usage: python3 {} input_grib2 ouput_m3d i0 j0 i1 j1'.format(sys.argv[0]))
+        #print('usage: python3 {} input_grib2 ouput_m3d i0 j0 i1 j1'.format(sys.argv[0]))
+        print('usage: python3 {} ouput_m3d i0 j0 i1 j1 input_grib2 [...]'.format(sys.argv[0]))
         sys.exit(1)
     
-    fname, oname, i0, j0, i1, j1 = sys.argv[1:7]
+    #fname, oname, i0, j0, i1, j1 = sys.argv[1:7]
+    oname, i0, j0, i1, j1 = sys.argv[1:6]
+    fnames = sys.argv[6:]
     i0, j0, i1, j1 = [int(_) for _ in (i0, j0, i1, j1)]
 
-    hrrr = Hrrr(fname, oname, i0, j0, i1, j1)
+    #hrrr = Hrrr(fname, oname, i0, j0, i1, j1)
+    hrrr = HrrrSeries(fnames, oname, i0, j0, i1, j1)
     hrrr.write_header()
     hrrr.write_data()
 
