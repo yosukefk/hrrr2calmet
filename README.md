@@ -1,37 +1,33 @@
 # hrrr2calmet
-ingests HRRR datasset into CALMET/CALPUFF model
+Ingests [High-Resolution Rapid Refresh (HRRR)](https://rapidrefresh.noaa.gov/hrrr/) meteorological model dataset into [CALMET/CALPUFF dispersion model](http://www.src.com/).
 
-## install
+## Install
 
-miniconda and conda-forge recommended
+Use of Miniconda and conda-forge recommended
 
-If you are completely new to Anaconda/Python, I recommend install "Miniconda". That should provide you either (1) dedicated way to start command line terminal with conda enabled, or (2) your default setting is changed to use with conda or (3) you have to always type conda activate before using conda based tools. In either way, command line prompt will be change to have (base) PS C:\Users\Yosuke> or (base) ~ $ something like that, having "(base)" included in the prompt. You are ready to install.
+If you are completely new to Anaconda/Python, I recommend install "Miniconda". That should provide you either (1) dedicated way to start command line terminal with conda enabled, 
+or (2) your default setting is changed to use with conda or (3) you have to always type conda activate before using conda based tools. 
+In either way, command line prompt will be change to have "(base) PS C:\Users\Yosuke> " or "(base) ~ $ " something like that, having "(base)" included in the prompt. 
+
 
 Grab code from git repo
 
-git clone https://github.com/yosukefk/hrrr2calmet.git
+`git clone https://github.com/yosukefk/hrrr2calmet.git`
 
-Grab required pacages
+Grab required packages
 
-conda install -c conda-forge --file requirements.txt
+`conda install -c conda-forge --file requirements.txt`
 
-## usage
+## Usage
 
-`python3 hrrr2calmet.py input.grib2 output.m3d i0 j0 i1 j0`
+`python3 hrrr2calmet.py infile outfile i0 j0 i1 j0`
 
-where
+where `infile` is input HRRR dataset in grib2 format, `outfile` is output "3D.DAT" format text file for CALMET, `i0`, `j0`, `i1` and `j1` are 1-based indices of lower-left and upper-right grid cells (i for easting, j for northing).
 
-input.grib2:  hrrr dataset in grib2 format
-output.m3d:  "3D.DAT" format text file to be used in CALMET
-i0: 1-based easting index of ll corner of extracted domain
-j0: 1-based northin index of ll corner of extracted domain
-i1: 1-based easting index of ur corner of extracted domain
-j1: 1-based northin index of ur corner of extracted domain
+## Disclaimer
 
-## disclaimer
+Please use the tool at your own risk.
 
-don't sue me.
+Currently, indices (i0, j0, i1, j1) I assume you can somehow look these up, knowing where the domain of your interest is.  
 
-currently, indices (i0, j0, i1, j1) i assume you somehow look it up, knowing where the domain is.  shouldn't be that hard to do this by specifying corner lat/lon should be fairly easy, as i now projection (using `rasterio` to read that from grib2 file), but not implemented yet.
-
-right now one file with one time step (hourly analysis file, for example) got translated into one 3D.DAT format file.  i may add capability to process series of grib2 files into one 3D.DAT file.  But this can be done flexibily by CALMET, so i didnt do ot.
+Right now one file with one time step (hourly analysis file, for example) got translated into one 3D.DAT format file.  I may add capability to process series of grib2 files into one 3D.DAT file, but this can be done flexibility by CALMET, so I did not do it.
