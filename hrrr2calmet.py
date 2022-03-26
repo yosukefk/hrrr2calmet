@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 import os
 import sys
+import warnings
 
 class HrrrSeries:
     def __init__(self, fnames, fo, i0, j0, i1, j1):
@@ -84,10 +85,15 @@ class Hrrr:
         self.shape0 = r.shape
         self.nj0, self.ni0 = r.shape
         self.crs = r.crs.to_dict()
+        
+        warnings.warn('hor. coordinates in grib2 file may be off by a few hundred meters.  Need to figure out better way...', UserWarning)
         self.gtrans = r.get_transform()
         assert self.gtrans[2] == 0 and self.gtrans[4] == 0
         self.x0 = self.gtrans[0]
         self.y0 = self.gtrans[3]
+# experimental, GRIB2 file has this slightly larger radius, does this causing coords point being off by a few hundreds meters?
+#        self.x0 *= 637000 / 6371229
+#        self.y0 *= 637000 / 6371229
         if self.gtrans[5] < 0: 
             self.y0 += self.gtrans[5] * (self.nj0 - 1)
         assert abs(self.gtrans[1]) == abs(self.gtrans[5])
@@ -119,7 +125,7 @@ class Hrrr:
         self.iindex = idx + i0
         self.jindex = jdx + j0
 
-        # horozonta coords
+        # horozontal coords
         self.xlatdot = ds[3].latitude
         self.xlongdot = ds[3].longitude - 360
 
@@ -186,7 +192,12 @@ class Hrrr:
 
 
         # cloud mixing ratio
-        self.cldmr = ds[2].clwmr
+        # ignoring ice (CIMIXR), just water (CLWMR)
+        try:
+            self.cldmr = ds[2].clwmr
+        except:
+            print(ds)
+            raise
 
         #print('w', ds[2].w.units)
         #print('r', ds[2].r.units)
@@ -454,7 +465,7 @@ def ext_grib(fname, fname2, rng, more_vnames=None, more_levels=None):
 
     # variables of interest
     vnames = ['PRES', 'APCP', 'SNOWC', 'DSWRF', 'DLWRF', 'TMP', 'SPFH', 'UGRD',
-    'VGRD', 'WIND', 'HGT', 'VVEL', 'RH', 'CLMR', 'LAND']
+    'VGRD', 'WIND', 'HGT', 'VVEL', 'RH', 'CLWMR', 'CIMIXR', 'LAND']
     if more_vnames is not None:
         vnames.extend(more_vnames)
 
