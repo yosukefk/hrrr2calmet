@@ -440,7 +440,7 @@ def uv2ws(u,v):
     return ws,wd
 
 
-def ext_grib(fname, fname2, rng):
+def ext_grib(fname, fname2, rng, more_vnames=None, more_levels=None):
     """
     make smaller grib by subsetting variables and horizontal extent
 
@@ -453,8 +453,10 @@ def ext_grib(fname, fname2, rng):
     i0, j0, i1, j1 = rng
 
     # variables of interest
-    vnames = ('PRES', 'APCP', 'SNOWC', 'DSWRF', 'DLWRF', 'TMP', 'SPFH', 'UGRD',
-    'VGRD', 'WIND', 'HGT', 'VVEL', 'RH', 'CLMR', 'LAND')
+    vnames = ['PRES', 'APCP', 'SNOWC', 'DSWRF', 'DLWRF', 'TMP', 'SPFH', 'UGRD',
+    'VGRD', 'WIND', 'HGT', 'VVEL', 'RH', 'CLMR', 'LAND']
+    if more_vnames is not None:
+        vnames.extend(more_vnames)
 
     # subset by location
     irng = f'{i0}:{i1}'
@@ -465,6 +467,8 @@ def ext_grib(fname, fname2, rng):
     levels = ['.* mb' ]
     levels += ['surface']
     levels += [f"{z} m above ground" for z in [2,10]]
+    if more_levels is not None:
+        levels += more_levels
     lev = ':(' + '|'.join(levels) + '):'
 
     # all variables of interest
@@ -478,6 +482,8 @@ def ext_grib(fname, fname2, rng):
             fname2]
      
     print(cmd)
+    
+
     subprocess.run(cmd)
 
 def tester():
